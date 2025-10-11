@@ -1,0 +1,45 @@
+{
+  "name": "chainfilm-hardhat",
+  "version": "0.1.0",
+  "private": true,
+  "description": "ChainFilm contracts on FHEVM (Sepolia-ready)",
+  "license": "BSD-3-Clause-Clear",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "clean": "rimraf ./artifacts ./cache ./types ./deployments",
+    "compile": "cross-env TS_NODE_TRANSPILE_ONLY=true hardhat compile",
+    "postcompile": "hardhat typechain",
+    "typechain": "cross-env TS_NODE_TRANSPILE_ONLY=true hardhat typechain",
+    "lint": "solhint --max-warnings 0 \"contracts/**/*.sol\"",
+    "test": "hardhat test",
+    "deploy:sepolia": "hardhat deploy --network sepolia",
+    "deploy:localhost": "hardhat deploy --network localhost"
+  },
+  "dependencies": {
+    "@fhevm/solidity": "^0.8.0",
+    "@zama-fhe/oracle-solidity": "^0.1.0",
+    "encrypted-types": "^0.0.4"
+  },
+  "devDependencies": {
+    "@fhevm/hardhat-plugin": "^0.1.0",
+    "@nomicfoundation/hardhat-ethers": "^3.1.0",
+    "@typechain/ethers-v6": "^0.5.1",
+    "@typechain/hardhat": "^9.1.0",
+    "@types/node": "^20",
+    "cross-env": "^7.0.3",
+    "ethers": "^6.15.0",
+    "hardhat": "^2.26.0",
+    "hardhat-deploy": "^0.11.45",
+    "rimraf": "^6.0.1",
+    "solhint": "^6.0.0",
+    "ts-node": "^10.9.2",
+    "typechain": "^8.3.2",
+    "typescript": "^5.4.0"
+  }
+}
+
+
+
+
