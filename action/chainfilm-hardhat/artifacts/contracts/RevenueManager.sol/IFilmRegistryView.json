@@ -1,0 +1,40 @@
+{
+  "_format": "hh-sol-artifact-1",
+  "contractName": "IFilmRegistryView",
+  "sourceName": "contracts/RevenueManager.sol",
+  "abi": [
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "filmId",
+          "type": "uint256"
+        }
+      ],
+      "name": "getSplit",
+      "outputs": [
+        {
+          "internalType": "address[]",
+          "name": "collaborators",
+          "type": "address[]"
+        },
+        {
+          "internalType": "uint32[]",
+          "name": "sharesBps",
+          "type": "uint32[]"
+        },
+        {
+          "internalType": "bool",
+          "name": "exists",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    }
+  ],
+  "bytecode": "0x",
+  "deployedBytecode": "0x",
+  "linkReferences": {},
+  "deployedLinkReferences": {}
+}
