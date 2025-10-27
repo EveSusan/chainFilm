@@ -1,0 +1,49 @@
+# Only track action directory
+/*
+!action/
+!/.github/
+!/.github/**
+
+# Node
+**/node_modules/
+**/.next/
+**/dist/
+**/out/
+**/.turbo/
+**/.vercel/
+
+# Logs
+**/npm-debug.log*
+**/yarn-debug.log*
+**/yarn-error.log*
+**/pnpm-debug.log*
+**/.pnpm-debug.log*
+
+# Env
+**/.env*
+**/.env.*
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+
+# Coverage and reports
+**/coverage/
+**/.nyc_output/
+**/reports/
+
+# TypeScript build cache
+**/.tsbuildinfo
+
+# Hardhat/Foundry caches
+**/cache/
+**/artifacts/build-info/
+**/broadcast/
+**/.foundry-cache/
+
+# Misc
+**/.DS_Store
