@@ -1,6 +1,5 @@
 "use client";
 import { Suspense, useEffect, useMemo, useState } from "react";
-import { useSearchParams } from "next/navigation";
 import { ethers } from "ethers";
 import { FilmRegistryABI } from "@/abi/FilmRegistryABI";
 import { FilmRegistryAddresses } from "@/abi/FilmRegistryAddresses";
@@ -15,8 +14,7 @@ function getByChain<T extends { [k: string]: any }>(map: T, chainId?: number) {
 }
 
 function PlayerInner() {
-  const search = useSearchParams();
-  const filmId = search.get("filmId") || "0";
+  const [filmId, setFilmId] = useState<string>("0");
   const [provider, setProvider] = useState<ethers.BrowserProvider>();
   const [chainId, setChainId] = useState<number>();
   const [signer, setSigner] = useState<ethers.JsonRpcSigner>();
@@ -26,6 +24,13 @@ function PlayerInner() {
   const [owner, setOwner] = useState<string>();
   const [videoUrl, setVideoUrl] = useState<string | undefined>();
   const [message, setMessage] = useState<string>("");
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const sp = new URLSearchParams(window.location.search);
+      setFilmId(sp.get("filmId") || "0");
+    }
+  }, []);
 
   useEffect(() => {
     (async () => {
