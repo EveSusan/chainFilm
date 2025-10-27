@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useMemo, useState } from "react";
+import { Suspense, useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { ethers } from "ethers";
 import { FilmRegistryABI } from "@/abi/FilmRegistryABI";
@@ -14,7 +14,7 @@ function getByChain<T extends { [k: string]: any }>(map: T, chainId?: number) {
   return entry.address as `0x${string}`;
 }
 
-export default function PlayerPage() {
+function PlayerInner() {
   const search = useSearchParams();
   const filmId = search.get("filmId") || "0";
   const [provider, setProvider] = useState<ethers.BrowserProvider>();
@@ -122,6 +122,14 @@ export default function PlayerPage() {
         </div>
       )}
     </div>
+  );
+}
+
+export default function Page() {
+  return (
+    <Suspense fallback={<div style={{ maxWidth: 1200, margin: '40px auto', padding: 20 }}>Loading...</div>}>
+      <PlayerInner />
+    </Suspense>
   );
 }
 
