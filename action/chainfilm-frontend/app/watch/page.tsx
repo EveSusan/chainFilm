@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useMemo, useState } from "react";
-import { useParams, useRouter } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { ethers } from "ethers";
 import { FilmRegistryABI } from "@/abi/FilmRegistryABI";
 import { FilmRegistryAddresses } from "@/abi/FilmRegistryAddresses";
@@ -15,7 +15,8 @@ function getByChain<T extends { [k: string]: any }>(map: T, chainId?: number) {
 }
 
 export default function PlayerPage() {
-  const { filmId } = useParams<{ filmId: string }>();
+  const search = useSearchParams();
+  const filmId = search.get("filmId") || "0";
   const [provider, setProvider] = useState<ethers.BrowserProvider>();
   const [chainId, setChainId] = useState<number>();
   const [signer, setSigner] = useState<ethers.JsonRpcSigner>();
@@ -50,17 +51,15 @@ export default function PlayerPage() {
       if (!provider || !addresses.registry || !addresses.license || !account) return;
       try {
         setLoading(true);
-        setMessage("正在读取作品信息...");
+        setMessage("Loading film info...");
         const registry = new ethers.Contract(addresses.registry, FilmRegistryABI.abi, provider);
         const lic = new ethers.Contract(addresses.license, LicenseManagerABI.abi, provider);
         const f = await registry.films(Number(filmId));
         setOwner(f.owner);
 
-        // 许可检查
         const ok = await lic.getLicenseStatus(Number(filmId), account);
         setAuthorized(ok || f.owner.toLowerCase() === account.toLowerCase());
 
-        // 从 metadata 取视频 CID
         const cid = String(f.ipfsCidMeta || "");
         const url = `https://ipfs.io/ipfs/${cid}`;
         const meta = await fetch(url).then(r => r.json());
@@ -69,7 +68,7 @@ export default function PlayerPage() {
         setVideoUrl(final);
         setMessage("");
       } catch (e: any) {
-        setMessage("读取失败: " + e.message);
+        setMessage("Failed: " + e.message);
       } finally {
         setLoading(false);
       }
@@ -81,14 +80,14 @@ export default function PlayerPage() {
     if (!signer || !addresses.license) return;
     try {
       setLoading(true);
-      setMessage("正在购买授权...");
+      setMessage("Purchasing...");
       const lic = new ethers.Contract(addresses.license, LicenseManagerABI.abi, signer);
       const tx = await lic.purchaseLicense(Number(filmId), { value: ethers.parseEther("0.001") });
       await tx.wait();
       setAuthorized(true);
-      setMessage("购买成功");
+      setMessage("Success");
     } catch (e: any) {
-      setMessage("购买失败: " + e.message);
+      setMessage("Purchase failed: " + e.message);
     } finally {
       setLoading(false);
     }
@@ -96,11 +95,11 @@ export default function PlayerPage() {
 
   return (
     <div style={{ maxWidth: 1200, margin: '40px auto', padding: 20 }}>
-      <h2 style={{ fontSize: 28, marginBottom: 20 }}>影片播放</h2>
+      <h2 style={{ fontSize: 28, marginBottom: 20 }}>Player</h2>
       {message && <div style={{ marginBottom: 16, color: '#aaa' }}>{message}</div>}
 
       {loading ? (
-        <div>加载中...</div>
+        <div>Loading...</div>
       ) : authorized ? (
         videoUrl ? (
           <video
@@ -110,7 +109,7 @@ export default function PlayerPage() {
             style={{ width: '100%', borderRadius: 12, border: '1px solid var(--border-color)' }}
           />
         ) : (
-          <div>无法读取视频链接</div>
+          <div>Video not available</div>
         )
       ) : (
         <div style={{
@@ -118,16 +117,12 @@ export default function PlayerPage() {
           border: '1px solid var(--border-color)',
           borderRadius: 12
         }}>
-          <div style={{ marginBottom: 12 }}>尚未获得该影片的播放授权</div>
-          <button className="btn-primary" onClick={purchase}>购买授权并播放</button>
+          <div style={{ marginBottom: 12 }}>No license yet</div>
+          <button className="btn-primary" onClick={purchase}>Purchase license</button>
         </div>
       )}
     </div>
   );
 }
-
-
-
-
 
 
